@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ToDoAppMVC.Migrations
+namespace ToDoAppMVC.Data.Migrations
 {
-    public partial class AddTaskToDb : Migration
+    public partial class FirstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

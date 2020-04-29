@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using ToDoAppMVC.Models;
+using ToDoAppMVC.Data;
 using Task = ToDoAppMVC.Models.Task;
 
 namespace ToDoAppMVC.Controllers
@@ -20,11 +20,14 @@ namespace ToDoAppMVC.Controllers
         {
             _db = db;
         }
+
+        [Authorize]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Authorize]
         public IActionResult Upsert(int? id)
         {
             Task = new Task();
@@ -32,6 +35,7 @@ namespace ToDoAppMVC.Controllers
             {
                 //create
                 Task.Status = "New";
+                Task.Username = User.Identity.Name;
                 return View(Task);
             }
             //update
@@ -40,10 +44,11 @@ namespace ToDoAppMVC.Controllers
             {
                 return NotFound();
             }
-            
+
             return View(Task);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upsert()
@@ -54,6 +59,7 @@ namespace ToDoAppMVC.Controllers
                 {
                     //create
                     Task.Status = "New";
+                    Task.Username = User.Identity.Name;
                     _db.Tasks.Add(Task);
                 }
                 else
@@ -69,7 +75,8 @@ namespace ToDoAppMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Json(new { data = await _db.Tasks.ToListAsync() });
+
+            return Json(new { data = await _db.Tasks.Where(l => l.Username == User.Identity.Name).ToListAsync() });
         }
 
 

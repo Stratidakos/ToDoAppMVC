@@ -16,5 +16,6 @@ namespace ToDoAppMVC.Models
         public string Description { get; set; }
         public string Status { get; set; }
 
+        public string Username{ get; set; }
     }
 }
